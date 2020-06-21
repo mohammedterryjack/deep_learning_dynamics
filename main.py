@@ -10,13 +10,13 @@ from visualiser import Visualiser
 from self_organising_map import SelfOrganisingMap
 from principal_component_analysis import PrincipalComponentAnalysis
 from autoencoder import AutoEncoder
-from autoencoder_som import AE_SOM
+from autoencoder_tsne import AE_Tsne
 ##########################################################
 parser = ArgumentParser()
 parser.add_argument("--timestamp",type=str, help="load in a previous datafile using its timestamp - e.g. 11h57m01s20June2020")
 parser.add_argument("--average_hidden_layers", action='store_true', default=False, help="pool neural network's hidden layers to reduce network parameters to track")
 parser.add_argument("--train_projection_model_on_first_only", action='store_true', default=False, help="projection model is trained on learning of first neural network but is still used to project parameters of all neural networks - default: trained on all neural networks")
-parser.add_argument("--projection", type=str, choices=("pca","som","ae","ae_som"), default="ae", help="reduce dimension of network parameters for plotting")
+parser.add_argument("--projection", type=str, choices=("pca","som","ae","ae_tsne"), default="ae", help="reduce dimension of network parameters for plotting")
 parser.add_argument("--dataset", type=str, choices=("mnist","omniglot"), default="mnist", help="dataset task for training the neural networks")
 parser.add_argument("--iterations", type=int, choices=range(1,100), default=10, help="training iterations")
 parser.add_argument("--networks", type=int, choices=range(1,10), default=2, help="number of neural networks")
@@ -35,7 +35,7 @@ Visualiser.plot_coordinates(
         training_inputs=x,
         training_outputs=y,
         classes = c,
-        projection_model= PrincipalComponentAnalysis if args.projection == "pca" else SelfOrganisingMap if args.projection == "som" else AutoEncoder if args.projection == "ae" else AE_SOM,
+        projection_model= PrincipalComponentAnalysis if args.projection == "pca" else SelfOrganisingMap if args.projection == "som" else AutoEncoder if args.projection == "ae" else AE_Tsne,
         train_projection_model_on_first_only=args.train_projection_model_on_first_only,
         number_of_networks=args.networks,
         training_iterations=args.iterations, 

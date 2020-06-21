@@ -1,33 +1,27 @@
 ############   NATIVE IMPORTS  ###########################
 ############ INSTALLED IMPORTS ###########################
 from sklearn.neural_network import MLPRegressor
-from SimpSOM import somNet
-from numpy import array,zeros
+from sklearn.manifold import TSNE
+from numpy import zeros
 ############   LOCAL IMPORTS   ###########################
 from projection_method import ProjectionMethod
 from data_types import Vectors
 ##########################################################
     
-class AE_SOM(ProjectionMethod):
-    """ NonLinear Dimensionality reduction via an Autoencoder (AE) and then a Self-Organising-Map (SOM)"""
+class AE_Tsne(ProjectionMethod):
+    """ NonLinear Dimensionality reduction via an Autoencoder (AE) and then Tsne"""
 
     def __init__(self, training_vectors:Vectors) -> None:
         self.encoder = self.get_encoder_from_autoencoder(
             vectors=training_vectors,
             trained_encoder_decoder = self.train_autoencoder(training_vectors)
         )
-        self.som = self.train_som(training_vectors)
 
     def reduce_dimensions(self,vectors:Vectors) -> Vectors:
-        vectors_ae = self.encoder.predict(vectors)
-        return self.som.project(array=array(vectors_ae), colnum=0, show=True)
+        return TSNE(n_components=2).fit_transform(
+            self.encoder.predict(vectors)
+        )
     
-    @staticmethod
-    def train_som(vectors:Vectors) -> somNet:
-        model = somNet(netHeight=20, netWidth=20, data=array(vectors), PCI=True)
-        model.train(0.01, 10000)
-        return model
-
     @staticmethod
     def train_autoencoder(vectors:Vectors) -> MLPRegressor:
         model = MLPRegressor(
