@@ -39,17 +39,17 @@ e.g. to view the plot for experiment 21h34m35s21June2020:
 
 the experiment results should appear momentarily
 
-![](data\21h34m35s21June2020.png)
+![](data/21h34m35s21June2020.png)
 
 ## Projection Models
 In order to trace the learning of the deep neural network through weight space, each network's N-dimensional parameters (weights) are projected down to 2d vectors.  There are several options to achieve this:
 - Principal Component Analysis (PCA):  This is a linear dimensionality reduction method (this may not the best choice as the weight space is likely nonlinear in nature)
-![](data\17h03m50s20June2020.png)
+![](data/17h03m50s20June2020.png)
 - Self Organising Map (SOM): This is a non-linear dimensionality reduction method and is quite effective, but takes a long long time to train
-![](data\13h52m28s21June2020.png)
+![](data/13h52m28s21June2020.png)
 - Autoencoder (AE): This is a non-linear dimensionality reduction method and is also quite effective while being much faster to train than an SOM
-![](data\21h55m04s21June2020.png)
+![](data/21h55m04s21June2020.png)
 - Autoencoder with SOM: This maps the N-dimensional weights to an M-dimensional vector (M < N) and then uses a self-organising map to map it to a 2d vector. This speeds up the time taken to train the SOM, however, it is still quite slow. Therefore, we prefer the pure Autoencoder method over this.
-![](data\18h32m59s21June2020.png)
+![](data/18h32m59s21June2020.png)
 - Autoencoder with Tsne: This maps the N-dimensional weights to an M-dimensional vector (M < N) and then uses Tsne to reduce it to a 2d vector.  Tsne is not used on its own as it works best on smaller vectors. However we found Tsne projections to be too stochastic and preferred the pure Autoencoder method over it.
-![](data\17h30m29s21June2020.png)
+![](data/17h30m29s21June2020.png)
