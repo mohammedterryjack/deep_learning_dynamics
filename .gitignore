@@ -3,3 +3,4 @@
 .vscode/*
 .tmp.drivedownload
 plots/*
+*.pkl
