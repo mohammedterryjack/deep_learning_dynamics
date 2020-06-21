@@ -1,0 +1,21 @@
+{
+   "notes": "using pretrained som shows that it doesnt work. it needs to be trained on the data each time (but this is timely)",
+   "training_iterations": 15,
+   "projection_model": "SelfOrganisingMap",
+   "train_projection_model_on_first_only": false,
+   "number_of_networks": 1,
+   "network_parameters": {
+      "hidden_layer_sizes": [
+         8,
+         8,
+         8,
+         8,
+         8
+      ],
+      "alpha": 0.0001,
+      "solver": "sgd",
+      "learning_rate_init": 0.1
+   },
+   "layer_to_track": null,
+   "average_hidden_layers": false
+}
