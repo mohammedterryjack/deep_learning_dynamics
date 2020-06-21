@@ -1,0 +1,8 @@
+*.pyc
+*.json
+*.pkl
+*.sav
+*.png
+.vscode/*
+.tmp.drivedownload
+plots/*
