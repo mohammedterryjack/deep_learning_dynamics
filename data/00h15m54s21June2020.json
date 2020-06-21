@@ -1,5 +1,5 @@
 {
-   "notes": "autoencoder needs more iterations to learn better",
+   "notes": "shows badly learnt network very far from networks that learnt well",
    "training_iterations": 30,
    "projection_model": "AutoEncoder",
    "train_projection_model_on_first_only": false,
