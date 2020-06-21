@@ -10,6 +10,7 @@ from data_types import Vectors
     
 class AE_Tsne(ProjectionMethod):
     """ NonLinear Dimensionality reduction via an Autoencoder (AE) and then Tsne"""
+    #TODO: make this inherit from AutoEncoder class - to reduce repetition of code
 
     def __init__(self, training_vectors:Vectors) -> None:
         self.encoder = self.get_encoder_from_autoencoder(
