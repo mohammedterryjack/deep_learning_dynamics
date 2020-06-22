@@ -21,6 +21,9 @@ parser.add_argument("--dataset", type=str, choices=("mnist","omniglot"), default
 parser.add_argument("--iterations", type=int, choices=range(1,100), default=10, help="training iterations")
 parser.add_argument("--networks", type=int, choices=range(1,10), default=2, help="number of neural networks")
 parser.add_argument("--note", type=str, default = "...", help="description added to meta data")
+parser.add_argument("--width",type=int,default=8,help="number of neurons in neural network hidden layer")
+parser.add_argument("--depth",type=int,default=5,help="number of hidden layers in neural network")
+parser.add_argument("--activation",type=str, choices=("identity","logistic","tanh","relu"), default="relu",help="activation function. logistic = sigmoid, identity = none")
 args = parser.parse_args()
 
 if args.dataset == "mnist":
@@ -40,7 +43,10 @@ Visualiser.plot_coordinates(
         number_of_networks=args.networks,
         training_iterations=args.iterations, 
         network_parameters=dict(
-            hidden_layer_sizes=(8,8,8,8,8), 
+            hidden_layer_sizes=[
+                args.width for _ in range(args.depth)
+            ], 
+            activation = args.activation, 
             alpha=1e-4,
             solver='sgd', 
             learning_rate_init=.1

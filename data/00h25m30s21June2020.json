@@ -12,6 +12,7 @@
          8,
          8
       ],
+      "activation": "relu",
       "alpha": 0.0001,
       "solver": "sgd",
       "learning_rate_init": 0.1

@@ -1,9 +1,9 @@
 {
-   "notes": "shows badly learnt network very far from networks that learnt well",
-   "training_iterations": 30,
+   "notes": "Bingo! very nice plot - interesting to study. one badly trained network off to side",
+   "training_iterations": 10,
    "projection_model": "AutoEncoder",
    "train_projection_model_on_first_only": false,
-   "number_of_networks": 4,
+   "number_of_networks": 5,
    "network_parameters": {
       "hidden_layer_sizes": [
          8,
