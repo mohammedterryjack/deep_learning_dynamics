@@ -21,6 +21,7 @@ parser.add_argument("--dataset", type=str, choices=("mnist","omniglot"), default
 parser.add_argument("--iterations", type=int, choices=range(1,100), default=10, help="training iterations")
 parser.add_argument("--networks", type=int, choices=range(1,10), default=2, help="number of neural networks")
 parser.add_argument("--layer_to_track",type=int,default=None,help="only track learning of a single layer. specify the layer to track")
+parser.add_argument("--track_first_n_layers_separately",type=int,default=None,help="track the learning of the first N layers in the neural network separately")
 parser.add_argument("--note", type=str, default = "...", help="description added to meta data")
 parser.add_argument("--width",type=int,default=8,help="number of neurons in neural network hidden layer")
 parser.add_argument("--depth",type=int,default=5,help="number of hidden layers in neural network")
@@ -54,6 +55,7 @@ Visualiser.plot_coordinates(
             learning_rate_init=.1
         ),
         layer_to_track=args.layer_to_track,
+        track_first_n_layers_separately=args.track_first_n_layers_separately,
         average_hidden_layers=args.average_hidden_layers,
         notes=args.note,
     )

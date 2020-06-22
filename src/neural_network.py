@@ -1,5 +1,5 @@
 ############   NATIVE IMPORTS  ###########################
-from typing import Optional, Tuple, List
+from typing import Optional, Tuple, List, Union, Union
 from datetime import datetime 
 from json import dumps
 from copy import deepcopy
@@ -37,24 +37,35 @@ class DeepNeuralNetworkTrainer:
         network_parameters:Optional[dict]=None,
         layer_to_track:Optional[int]=None, 
         average_hidden_layers:bool=False, 
-        notes:str=""
+        notes:str="",
+        track_first_n_layers_separately:bool=False
     ) -> DataFrame:
         """ N learning iterations for M neural networks """
                 
         vectorisation_method = DeepNeuralNetworkTrainer._get_vectorisation_method(
             layer_to_track=layer_to_track, 
             average_hidden_layers=average_hidden_layers,
-            enough_layers=network_parameters and "hidden_layer_sizes" in network_parameters and len(network_parameters["hidden_layer_sizes"]) > 2
+            enough_layers=network_parameters and "hidden_layer_sizes" in network_parameters and len(network_parameters["hidden_layer_sizes"]) > 2,
+            track_first_n_layers_separately=track_first_n_layers_separately
         )
         learning_history = []
         network_names = []
         network_scores = []
         for network_index in range(number_of_networks):
             network = MLPClassifier(**network_parameters) if network_parameters else MLPClassifier()
-            learning_dynamics, scores = DeepNeuralNetworkTrainer._learn(network, network_index, classes, training_inputs,training_outputs,training_iterations,vectorisation_method)
+            learning_dynamics, scores, labels = DeepNeuralNetworkTrainer._learn(
+                network = network,
+                network_id = network_index,
+                classes = classes,
+                training_inputs = training_inputs, 
+                training_outputs = training_outputs, 
+                iterations = training_iterations,
+                vectorisation_method = vectorisation_method,
+                layers_to_track = track_first_n_layers_separately if track_first_n_layers_separately else 1,
+            )
             learning_history.extend(learning_dynamics)
             network_scores.extend(scores)
-            network_names.extend([network_index]*training_iterations)
+            network_names.extend(labels)
         
         trained_projection_model = projection_model(
             training_vectors=learning_history[:training_iterations] if train_projection_model_on_first_only else learning_history
@@ -76,6 +87,7 @@ class DeepNeuralNetworkTrainer:
                 "network_parameters":network_parameters,
                 "layer_to_track":layer_to_track, 
                 "average_hidden_layers":average_hidden_layers, 
+                "track_first_n_layers_separately":track_first_n_layers_separately,
             }
         )
         return dataframe
@@ -98,23 +110,37 @@ class DeepNeuralNetworkTrainer:
         training_inputs:Vectors, 
         training_outputs:Labels, 
         iterations:int,
-        vectorisation_method:callable
-    ) -> Tuple[Vectors,List[float]]:
+        vectorisation_method:Optional[callable],
+        layers_to_track:int
+    ) -> Tuple[Vectors,List[float],Labels]:
         """ N learning iterations for a single neural network """
 
         vectors_over_time = []
         scores_over_time = []
+        network_names = []
         for i in range(iterations):
-            vectors_over_time.append(
-                DeepNeuralNetworkTrainer._step(
-                    network=network, 
-                    classes=classes, 
-                    training_inputs=training_inputs, 
-                    training_outputs=training_outputs, 
-                    convert_matrix_to_vector_method=vectorisation_method
-                )                
-            )
-            scores_over_time.append(network.score(training_inputs, training_outputs))
+            vectors = DeepNeuralNetworkTrainer._step(
+                network=network, 
+                classes=classes, 
+                training_inputs=training_inputs, 
+                training_outputs=training_outputs, 
+                convert_matrix_to_vector_method= vectorisation_method 
+            )                
+            score = network.score(training_inputs, training_outputs)
+            if vectorisation_method:
+                vectors_over_time.append(vectors)
+                scores_over_time.append(score)
+                network_names.append(network_id)
+            else:
+                for layer_id in range(1,layers_to_track):
+                    vectors_over_time.append(
+                        DeepNeuralNetworkTrainer._convert_matrix_into_vector_by_sampling(
+                            vectors=vectors,
+                            layer_to_sample=layer_id
+                        )
+                    )
+                    scores_over_time.append(score)
+                    network_names.append(f"network:{network_id}_layer:{layer_id}")
 
             print(TRAINING_MESSAGE.format(
                 network_index = network_id,
@@ -125,7 +151,7 @@ class DeepNeuralNetworkTrainer:
                 layer_combination_method = vectorisation_method
             ))
 
-        return vectors_over_time, scores_over_time
+        return vectors_over_time, scores_over_time, network_names
 
 
     @staticmethod
@@ -134,12 +160,12 @@ class DeepNeuralNetworkTrainer:
         classes:Labels,
         training_inputs:Vectors, 
         training_outputs:Labels,
-        convert_matrix_to_vector_method:callable
-    ) -> array: 
+        convert_matrix_to_vector_method:Optional[callable],
+    ) -> Union[Vectors,array]: 
         """ single learning iteration for a single neural network """
         network.partial_fit(training_inputs, training_outputs, classes)
         network_layers_as_vectors = list(map(DeepNeuralNetworkTrainer._convert_matrix_into_vector_by_reshaping,network.coefs_))
-        return convert_matrix_to_vector_method(network_layers_as_vectors) 
+        return convert_matrix_to_vector_method(network_layers_as_vectors) if convert_matrix_to_vector_method else network_layers_as_vectors
     
 
     @staticmethod
@@ -147,15 +173,18 @@ class DeepNeuralNetworkTrainer:
         layer_to_track:Optional[int], 
         average_hidden_layers:bool,
         enough_layers:bool,
-    ) -> callable:
+        track_first_n_layers_separately:int,
+    ) -> Optional[callable]:
         """ method to convert N 1d vectors (neural network layers) into a single 1d vector """
 
+        if track_first_n_layers_separately:
+            return
         if layer_to_track is not None:
             return lambda layers: DeepNeuralNetworkTrainer._convert_matrix_into_vector_by_sampling(
                 vectors=layers,
                 layer_to_sample=layer_to_track
             )
-        elif average_hidden_layers and enough_layers:
+        if average_hidden_layers and enough_layers:
             return DeepNeuralNetworkTrainer._average_hidden_layers_and_concatenate_input_output_layers 
         return concatenate
 
@@ -171,7 +200,7 @@ class DeepNeuralNetworkTrainer:
             ]
         ) 
 
-
+        
     @staticmethod
     def _convert_matrix_into_vector_by_sampling(vectors:Vectors, layer_to_sample:int) -> array:
         """ layer to sample = 0: [[1,2],[3,4]] -> [1,2] """
