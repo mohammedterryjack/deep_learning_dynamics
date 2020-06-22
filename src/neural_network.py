@@ -2,6 +2,7 @@
 from typing import Optional, Tuple, List
 from datetime import datetime 
 from json import dumps
+from copy import deepcopy
 ############ INSTALLED IMPORTS ###########################
 from sklearn.neural_network import MLPClassifier
 from numpy import array, concatenate, mean
@@ -174,7 +175,7 @@ class DeepNeuralNetworkTrainer:
     @staticmethod
     def _convert_matrix_into_vector_by_sampling(vectors:Vectors, layer_to_sample:int) -> array:
         """ layer to sample = 0: [[1,2],[3,4]] -> [1,2] """
-        return vectors[layer_to_sample]
+        return deepcopy(vectors[layer_to_sample])
 
 
     @staticmethod

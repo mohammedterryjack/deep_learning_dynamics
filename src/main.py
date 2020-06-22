@@ -20,16 +20,18 @@ parser.add_argument("--projection", type=str, choices=("PrincipalComponentAnalys
 parser.add_argument("--dataset", type=str, choices=("mnist","omniglot"), default="mnist", help="dataset task for training the neural networks")
 parser.add_argument("--iterations", type=int, choices=range(1,100), default=10, help="training iterations")
 parser.add_argument("--networks", type=int, choices=range(1,10), default=2, help="number of neural networks")
+parser.add_argument("--layer_to_track",type=int,default=None,help="only track learning of a single layer. specify the layer to track")
 parser.add_argument("--note", type=str, default = "...", help="description added to meta data")
 parser.add_argument("--width",type=int,default=8,help="number of neurons in neural network hidden layer")
 parser.add_argument("--depth",type=int,default=5,help="number of hidden layers in neural network")
 parser.add_argument("--activation",type=str, choices=("identity","logistic","tanh","relu"), default="relu",help="activation function. logistic = sigmoid, identity = none")
 args = parser.parse_args()
 
-if args.dataset == "mnist":
-    x, y, c = DataLoader.mnist()
-elif args.dataset == "omniglot":
-    x,y,c = DataLoader.omniglot()
+if not args.timestamp:
+    if args.dataset == "mnist":
+        x, y, c = DataLoader.mnist()
+    elif args.dataset == "omniglot":
+        x,y,c = DataLoader.omniglot()
 
 Visualiser.plot_coordinates(
     data_to_plot= read_pickle(
@@ -51,7 +53,7 @@ Visualiser.plot_coordinates(
             solver='sgd', 
             learning_rate_init=.1
         ),
-        layer_to_track=None,
+        layer_to_track=args.layer_to_track,
         average_hidden_layers=args.average_hidden_layers,
         notes=args.note,
     )
