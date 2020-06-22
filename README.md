@@ -33,13 +33,13 @@ inside `src` directory, run:
 
 ```python  main.py --timestamp TIMESTAMP```
 
-e.g. to view the plot for experiment 21h34m35s21June2020:
+e.g. to view the plot for experiment 17h32m49s22June2020:
 
-```python  main.py --timestamp 21h34m35s21June2020```
+```python  main.py --timestamp 17h32m49s22June2020```
 
 the experiment results should appear momentarily
 
-![](data/21h34m35s21June2020.png)
+![](data/17h32m49s22June2020.png)
 
 ## Projection Models
 In order to trace the learning of the deep neural network through weight space, each network's N-dimensional parameters (weights) are projected down to 2d vectors.  There are several options to achieve this:
