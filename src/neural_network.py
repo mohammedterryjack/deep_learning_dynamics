@@ -130,7 +130,7 @@ class DeepNeuralNetworkTrainer:
             if vectorisation_method:
                 vectors_over_time.append(vectors)
                 scores_over_time.append(score)
-                network_names.append(network_id)
+                network_names.append(f"network:{network_id}")
             else:
                 for layer_id in range(1,layers_to_track):
                     vectors_over_time.append(

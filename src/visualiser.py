@@ -30,13 +30,25 @@ class Visualiser:
 
     @staticmethod
     def annotate_scores(data:DataFrame) -> None:
-        for label,x,y in zip(
+        seen_names = set()
+        for name,score,x,y in zip(
+            data[DataFrameNames.NETWORK_NAME],
             data[DataFrameNames.NETWORK_SCORE],
             data[DataFrameNames.X_COORDINATE],
             data[DataFrameNames.Y_COORDINATE]
         ):
+            if name not in seen_names:
+                seen_names.add(name)
+                annotate(
+                    name,
+                    (x,y),
+                    textcoords="offset points", 
+                    xytext=(0,30), 
+                    ha='center'
+                )       
+
             annotate(
-                f"{label:.3f}",
+                f"{score:.3f}",
                 (x,y),
                 textcoords="offset points", 
                 xytext=(0,10), 
