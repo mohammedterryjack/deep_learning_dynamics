@@ -5,6 +5,8 @@ from matplotlib.pyplot import show, quiver, annotate
 ############   LOCAL IMPORTS   ###########################
 from data_types import DataFrameNames
 ##########################################################
+#TODO: plot networks on separate graphs when they overlap? (or when layers are tracked separately)
+#TODO: plot x_t by x_t-1 dynamics map to see spatio-temporal learning patterns (especially for layers tracked separately)
 
 class Visualiser:
     """ plots learning dynamics """
