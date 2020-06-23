@@ -38,7 +38,8 @@ class DeepNeuralNetworkTrainer:
         layer_to_track:Optional[int]=None, 
         average_hidden_layers:bool=False, 
         notes:str="",
-        track_first_n_layers_separately:bool=False
+        track_first_n_layers_separately:bool=False,
+        save_experiment:bool=True
     ) -> DataFrame:
         """ N learning iterations for M neural networks """
                 
@@ -68,7 +69,8 @@ class DeepNeuralNetworkTrainer:
             network_names.extend(labels)
         
         trained_projection_model = projection_model(
-            training_vectors=learning_history[:training_iterations] if train_projection_model_on_first_only else learning_history
+            training_vectors=learning_history[:training_iterations] if train_projection_model_on_first_only else learning_history,
+            save_model = save_experiment
         )
         dataframe = DeepNeuralNetworkTrainer.wrap_as_dataframe(
             coordinates=trained_projection_model.reduce_dimensions(learning_history),
@@ -76,20 +78,22 @@ class DeepNeuralNetworkTrainer:
             network_scores=network_scores,
             network_names=network_names
         )
-        DeepNeuralNetworkTrainer.save(
-            data=dataframe,
-            meta_data={
-                "notes":notes,
-                "training_iterations":training_iterations, 
-                "projection_model":type(trained_projection_model).__name__,
-                "train_projection_model_on_first_only":train_projection_model_on_first_only,
-                "number_of_networks":number_of_networks, 
-                "network_parameters":network_parameters,
-                "layer_to_track":layer_to_track, 
-                "average_hidden_layers":average_hidden_layers, 
-                "track_first_n_layers_separately":track_first_n_layers_separately,
-            }
-        )
+        if save_experiment:
+            DeepNeuralNetworkTrainer.save(
+                data=dataframe,
+                meta_data={
+                    "notes":notes,
+                    "training_iterations":training_iterations, 
+                    "projection_model":type(trained_projection_model).__name__,
+                    "train_projection_model_on_first_only":train_projection_model_on_first_only,
+                    "number_of_networks":number_of_networks, 
+                    "network_parameters":network_parameters,
+                    "layer_to_track":layer_to_track, 
+                    "average_hidden_layers":average_hidden_layers, 
+                    "track_first_n_layers_separately":track_first_n_layers_separately,
+                }
+            )
+        print(dataframe)
         return dataframe
 
 
@@ -99,8 +103,7 @@ class DeepNeuralNetworkTrainer:
         data.to_pickle(f"../data/{filename}.pkl")
         with open(f"../data/{filename}.json",'w') as file_to_write_to:
             file_to_write_to.write(dumps(meta_data,indent=3))
-        print(data)
-
+        print(f"data saved - {filename}")
 
     @staticmethod
     def _learn(

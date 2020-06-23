@@ -10,15 +10,16 @@ FILENAME = "SOM_20x20_wPCA"
 
 class SelfOrganisingMap(ProjectionMethod):
     """nonlinear dimensionality reduction via Kohonen's Self-organising-map (SOM)"""
-    def __init__(self, training_vectors:Vectors) -> None:
+    def __init__(self, training_vectors:Vectors,save_model:bool) -> None:
         try:
             self.model = self.load_model(filename=FILENAME)
         except FileNotFoundError:
             self.model = self.train_model(training_vectors)
-            self.save_model(
-                model=self.model,
-                filename=FILENAME
-            )
+            if save_model:
+                self.save_model(
+                    model=self.model,
+                    filename=FILENAME
+                )
     
     def reduce_dimensions(self,vectors:Vectors) -> Vectors:
         return self.model.project(array=array(vectors), colnum=0, show=True)

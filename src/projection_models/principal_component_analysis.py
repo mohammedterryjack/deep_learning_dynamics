@@ -8,7 +8,7 @@ from data_types import Vectors
 
 class PrincipalComponentAnalysis(ProjectionMethod):
     """ Linear Dimensionality reduction via Principal Component Analysis (PCA)"""
-    def __init__(self, training_vectors:Vectors) -> None:
+    def __init__(self, training_vectors:Vectors,save_model:bool) -> None:
         self.projection_method = PCA(n_components=2)
         self.projection_method.fit(training_vectors)
 

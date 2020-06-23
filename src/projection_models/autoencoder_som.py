@@ -10,7 +10,7 @@ from data_types import Vectors
 class AE_SOM(AutoEncoder):
     """ NonLinear Dimensionality reduction via an Autoencoder (AE) and then SOM"""
 
-    def __init__(self,training_vectors:Vectors) -> None:
+    def __init__(self,training_vectors:Vectors,save_model:bool) -> None:
         super().__init__(
             training_vectors=training_vectors,
             hidden_layer_sizes_encoder_only=[1024,512,256],

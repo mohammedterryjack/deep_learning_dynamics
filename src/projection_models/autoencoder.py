@@ -13,6 +13,7 @@ class AutoEncoder(ProjectionMethod):
     def __init__(
         self, 
         training_vectors:Vectors,
+        save_model:bool,
         hidden_layer_sizes_encoder_only:List[int] = [1024,512,256,128,64,32,16,8,4],
         projection_dimension:int = 2
     ) -> None:

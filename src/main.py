@@ -17,7 +17,7 @@ parser.add_argument("--timestamp",type=str, help="load in a previous datafile us
 parser.add_argument("--average_hidden_layers", action='store_true', default=False, help="pool neural network's hidden layers to reduce network parameters to track")
 parser.add_argument("--train_projection_model_on_first_only", action='store_true', default=False, help="projection model is trained on learning of first neural network but is still used to project parameters of all neural networks - default: trained on all neural networks")
 parser.add_argument("--projection", type=str, choices=("PrincipalComponentAnalysis","SelfOrganisingMap","AutoEncoder","AE_Tsne","AE_SOM"), default="AutoEncoder", help="reduce dimension of network parameters for plotting")
-parser.add_argument("--dataset", type=str, choices=("mnist","omniglot"), default="mnist", help="dataset task for training the neural networks")
+parser.add_argument("--dataset", type=str, choices=("toy","mnist","omniglot"), default="mnist", help="dataset task for training the neural networks")
 parser.add_argument("--iterations", type=int, choices=range(1,100), default=10, help="training iterations")
 parser.add_argument("--networks", type=int, choices=range(1,10), default=2, help="number of neural networks")
 parser.add_argument("--layer_to_track",type=int,default=None,help="only track learning of a single layer. specify the layer to track")
@@ -26,13 +26,11 @@ parser.add_argument("--note", type=str, default = "...", help="description added
 parser.add_argument("--width",type=int,default=8,help="number of neurons in neural network hidden layer")
 parser.add_argument("--depth",type=int,default=5,help="number of hidden layers in neural network")
 parser.add_argument("--activation",type=str, choices=("identity","logistic","tanh","relu"), default="relu",help="activation function. logistic = sigmoid, identity = none")
+parser.add_argument("--dont_save", action='store_true', default=False, help="prevent data from being stored to data directory")
 args = parser.parse_args()
 
 if not args.timestamp:
-    if args.dataset == "mnist":
-        x, y, c = DataLoader.mnist()
-    elif args.dataset == "omniglot":
-        x,y,c = DataLoader.omniglot()
+    x,y,c = DataLoader.load(args.dataset)
 
 Visualiser.plot_coordinates(
     data_to_plot= read_pickle(
@@ -58,5 +56,6 @@ Visualiser.plot_coordinates(
         track_first_n_layers_separately=args.track_first_n_layers_separately,
         average_hidden_layers=args.average_hidden_layers,
         notes=args.note,
+        save_experiment = not args.dont_save
     )
 )
