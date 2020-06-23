@@ -1,5 +1,5 @@
 {
-   "notes": "This plot would challenge the view that networks which train well end up in similar locations in parameter space. There are three networks which all improve and remain in a similar area to where they began. Perhaps improvement is based on dynamics and interplay between individual layers rather than entire network weights as a whole",
+   "notes": "This plot would challenge the view that networks which train well end up in similar locations in parameter space. There are three networks which all improve and remain in a similar area to where they began. Perhaps improvement is based on dynamics and interplay between individual layers rather than entire network weights as a whole. Insight: its not the location in parameter space but the location of the layers in that space with respect to one another",
    "training_iterations": 15,
    "projection_model": "AutoEncoder",
    "train_projection_model_on_first_only": false,
