@@ -26,6 +26,7 @@ parser.add_argument("--note", type=str, default = "...", help="description added
 parser.add_argument("--width",type=int,default=8,help="number of neurons in neural network hidden layer")
 parser.add_argument("--depth",type=int,default=5,help="number of hidden layers in neural network")
 parser.add_argument("--activation",type=str, choices=("identity","logistic","tanh","relu"), default="relu",help="activation function. logistic = sigmoid, identity = none")
+parser.add_argument("--learning_algorithm",type=str, choices=("lbfgs","sgd","adam"), default="sgd",help="learning alorithm")
 parser.add_argument("--dont_save", action='store_true', default=False, help="prevent data from being stored to data directory")
 args = parser.parse_args()
 
@@ -49,7 +50,7 @@ Visualiser.plot_coordinates(
             ], 
             activation = args.activation, 
             alpha=1e-4,
-            solver='sgd', 
+            solver=args.learning_algorithm, 
             learning_rate_init=.1
         ),
         layer_to_track=args.layer_to_track,

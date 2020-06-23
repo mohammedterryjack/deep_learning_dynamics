@@ -24,18 +24,14 @@ class DataLoader:
         """ returns: training_inputs, training_outputs, classes for AND dataset"""
         x = array(
             [
-                [0,0],
-                [0,1],
-                [1,0],
-                [1,1]
+                [0],
+                [1],
             ]
         )
         y = array(
             [
                 "true",
                 "false",
-                "false",
-                "true"
             ]
         )
         labels = ["false","true"]
