@@ -5,6 +5,9 @@ from matplotlib.pyplot import show, quiver, annotate
 ############   LOCAL IMPORTS   ###########################
 from data_types import DataFrameNames
 ##########################################################
+#TODO: heatmap of single hidden layers weight space. Get accuracy for each coordinate (find corresponding weight for that coordinate and test network)
+#TODO: if initialised in good areas of the weight space - and see how this affects training
+
 #TODO: plot networks on separate graphs when they overlap? (or when layers are tracked separately)
 #TODO: plot multiple layers of one network separately on a 2d graph and make the time the 3rd axis 
 #TODO: plot x_t by x_t-1 dynamics map to see spatio-temporal learning patterns (especially for layers tracked separately)
