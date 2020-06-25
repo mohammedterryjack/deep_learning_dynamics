@@ -8,18 +8,23 @@ class NeuralGridSearch:
     @staticmethod
     def greedy_search(vector_size:int) -> Iterable[List[int]]:
         """ step through every possible combination of weights in a vector/layer (each weight is 0 or 1) """
+        return NeuralGridSearch.binary_vector_range(minimum_value=0,maximum_value=vector_size,step_size=1)
+
+    @staticmethod
+    def binary_vector_range(minimum_value:int, maximum_value:int, step_size:int) -> Iterable[List[int]]:
+        """ sample weights in a vector/layer (each weight is 0 or 1) """
         return map(
-            lambda i:NeuralGridSearch._convert_int_to_binary_vector(number=i,vector_size=vector_size),
-            range(NeuralGridSearch.max_range(vector_size=vector_size))
+            lambda i:NeuralGridSearch._convert_int_to_binary_vector(number=i,vector_size=maximum_value),
+            range(minimum_value, NeuralGridSearch.max_range(vector_size=maximum_value), step_size)
         )
 
     @staticmethod
-    def float_range(min_value:int=-1, max_value:int=1,step_size:float=.01) -> float:
+    def float_range(minimum_value:int=-1, maximum_value:int=1,step_size:float=.01) -> float:
         """ step through a range of values with a floating point step size """
         for weight in range(
-            int(min_value//step_size),
-            int(max_value//step_size) + 1,
-            1
+            start=int(minimum_value//step_size),
+            stop=int(maximum_value//step_size) + 1,
+            step=1
         ):
             yield weight*step_size
 

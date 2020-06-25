@@ -1,0 +1,1 @@
+#TODO: convert vector to 0s and 1s.  Then convert from binary to int. Assuming two layers, this is 2d projection.
