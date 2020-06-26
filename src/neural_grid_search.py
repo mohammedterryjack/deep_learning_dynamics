@@ -40,6 +40,12 @@ class NeuralGridSearch:
         return int(binary_string, 2)
 
     @staticmethod
+    def _convert_binary_vector_to_int(binary_vector:List[int]) -> int:
+        return NeuralGridSearch._convert_binary_string_to_int(
+            binary_string=''.join(map(str,binary_vector))
+        )
+
+    @staticmethod
     def _convert_int_to_binary_string(number:int,leading_zeros:int) -> str:
         return format(number,f"#0{leading_zeros+2}b")[2:]
 

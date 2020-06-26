@@ -12,6 +12,7 @@ from pickle import dump
 from data_loader import DataLoader
 from neural_grid_search import NeuralGridSearch
 from projection_models.autoencoder import AutoEncoder
+from projection_models.binary_encoder import BinaryEncoder
 ##########################################################
 
 #TODO: heatmap of single hidden layers weight space. Get accuracy for each coordinate (find corresponding weight for that coordinate and test network)
@@ -100,6 +101,25 @@ from projection_models.autoencoder import AutoEncoder
 # heatmap(data=matrix)#, annot=True, linewidth=.5)
 # show()
 
+
+
+# NEW PROJECTIONS TO PLOT
+# matrix = zeros(shape=(103,103))
+# def float_to_int(x:float) -> int:
+#     return int(x/10) if x else 0
+
+# data = read_pickle("test.pkl")
+# vectors = data["weights"]
+# b = BinaryEncoder([],False)
+# coordinates = b.reduce_dimensions(vectors)
+# print(coordinates)
+# for xy,score in zip(coordinates,data["scores"]):
+#     x,y = xy    
+#     i = float_to_int(x)
+#     j = float_to_int(y)
+#     matrix[i][j] = max(matrix[i][j],score)
+# heatmap(data=matrix)
+# show()
 
 # #ANALYSING BEST
 
