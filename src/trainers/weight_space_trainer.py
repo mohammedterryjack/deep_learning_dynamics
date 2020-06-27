@@ -13,7 +13,7 @@ from data_types import Vectors, Labels
 class WeightSpaceTrainer:
     """Map the accuracy of a given neural network's in weightspace """
 
-    def __init__(self, ignore_first_layer:bool=False) -> None:
+    def __init__(self, freeze_first_layer:bool=False) -> None:
         self.x,self.y,classes = DataLoader.load("mnist")
         self.network = self._initialise_neural_network_for_mnist_with_weights_zeroed(
             input_layer_size=784,
@@ -22,7 +22,7 @@ class WeightSpaceTrainer:
             x = self.x,
             y = self.y,
             classes = classes,
-            zero_first_layer_too=not ignore_first_layer
+            zero_first_layer_too=not freeze_first_layer
         )
     
     def map_weight_space(self,data_filename:Optional[str]=None, sample_step_size:int=10) -> str:
@@ -34,7 +34,7 @@ class WeightSpaceTrainer:
             y = self.y
         )
         data_filename = data_filename if data_filename else f"sample_size_every_{sample_step_size}"
-        dump(scores, open(f"../../data/weight_space_experiment/{data_filename}.pkl", 'wb'))
+        dump(scores, open(f"../data/weight_space_experiment/{data_filename}.pkl", 'wb'))
         return data_filename
 
     @staticmethod

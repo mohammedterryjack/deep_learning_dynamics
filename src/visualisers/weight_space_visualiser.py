@@ -33,7 +33,7 @@ class WeightSpaceVisualiser:
             max(x_coordinates),
             max(y_coordinates)
         )
-        scale = 10 / upper_bound_float
+        scale = 100 / upper_bound_float
         float_to_int = lambda number: int((number + abs(lower_bound_float))*scale)
         lower_bound_int = float_to_int(lower_bound_float)
         upper_bound_int = float_to_int(upper_bound_float)
