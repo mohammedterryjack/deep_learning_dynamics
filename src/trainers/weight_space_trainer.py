@@ -1,5 +1,5 @@
 ############   NATIVE IMPORTS  ###########################
-from typing import List,Optional
+from typing import List,Optional, Dict
 ############ INSTALLED IMPORTS ###########################
 from sklearn.neural_network import MLPClassifier
 from numpy import zeros
@@ -36,7 +36,7 @@ class WeightSpaceTrainer:
         dump(scores, open(f"../../data/weight_space_experiment/{data_filename}.pkl", 'wb'))
         return data_filename
 
-   @staticmethod
+    @staticmethod
     def _initialise_neural_network_for_mnist_with_weights_zeroed(
         input_layer_size:int, 
         hidden_layer_size:int, 
