@@ -18,7 +18,9 @@ args = parser.parse_args()
 
 filename = args.filename
 if not filename:
-    filename = WeightSpaceTrainer().map_weight_space(
+    filename = WeightSpaceTrainer(
+        ignore_first_layer=args.ignore_first_layer
+    ).map_weight_space(
         sample_step_size=args.search_step_size,
         ignore_first_layer=args.ignore_first_layer
     )
