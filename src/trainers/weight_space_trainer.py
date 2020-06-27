@@ -24,15 +24,21 @@ class WeightSpaceTrainer:
             classes = classes
         )
     
-    def map_weight_space(self,data_filename:Optional[str]=None, sample_step_size:int=10) -> str:
-        scores = self._get_scores_for_weight_values(
+    def map_weight_space(self,data_filename:Optional[str]=None, sample_step_size:int=10, ignore_first_layer:bool=False) -> str:
+        scores = self._get_scores_for_weight_values_ignoring_first_layer(
+            output_layer_size=10,
+            sample_step_size=sample_step_size,
+            network=self.network,
+            x = self.x,
+            y = self.y
+        ) if ignore_first_layer else self._get_scores_for_weight_values(
             output_layer_size=10,
             sample_step_size=sample_step_size,
             network=self.network,
             x = self.x,
             y = self.y
         )
-        data_filename = data_filename if data_filename else f"sample_size_every_{sample_step_size}"
+        data_filename = data_filename if data_filename else f"sample_size_every_{sample_step_size}_ignore_first_layer_{ignore_first_layer}"
         dump(scores, open(f"../../data/weight_space_experiment/{data_filename}.pkl", 'wb'))
         return data_filename
 
@@ -43,7 +49,8 @@ class WeightSpaceTrainer:
         output_layer_size:10,
         x:Vectors,
         y:Labels,
-        classes:Labels
+        classes:Labels,
+        zero_first_layer_too:bool=True
     ) -> MLPClassifier:
         network = MLPClassifier(
             hidden_layer_sizes= (hidden_layer_size), 
@@ -53,13 +60,33 @@ class WeightSpaceTrainer:
             learning_rate_init=.1
         )
         network.partial_fit(x, y, classes)
-        network.coefs_[0][:][:] = zeros(
-            shape=(input_layer_size,hidden_layer_size)
-        )
+        if zero_first_layer_too:
+            network.coefs_[0][:][:] = zeros(
+                shape=(input_layer_size,hidden_layer_size)
+            )
         network.coefs_[1][:][:] = zeros(
             shape=(hidden_layer_size,output_layer_size)
         )
         return network
+
+    @staticmethod
+    def _get_scores_for_weight_values_ignoring_first_layer(
+        output_layer_size:int,
+        sample_step_size:int,
+        network:MLPClassifier,
+        x:Vectors,
+        y:Labels
+    ) -> Dict[Vectors,List[float]]:
+        data = {
+            "weights":[],
+            "scores":[]
+        }
+        for weights in NeuralGridSearch.binary_vector_range(0,output_layer_size,sample_step_size):
+            network.coefs_[1][1] = weights
+            data["weights"].append(weights)
+            data["scores"].append(network.score(x,y))
+            print(network.coefs_)
+        return data 
 
     @staticmethod
     def _get_scores_for_weight_values(
@@ -81,4 +108,5 @@ class WeightSpaceTrainer:
                 ]
                 data["weights"].append(weights_1+weights_2)
                 data["scores"].append(network.score(x,y))
+                print(network.coefs_)
         return data 
