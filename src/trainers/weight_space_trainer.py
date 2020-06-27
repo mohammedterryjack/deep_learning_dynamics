@@ -1,5 +1,5 @@
 ############   NATIVE IMPORTS  ###########################
-from typing import List
+from typing import List,Optional
 ############ INSTALLED IMPORTS ###########################
 from sklearn.neural_network import MLPClassifier
 from numpy import zeros
@@ -24,15 +24,17 @@ class WeightSpaceTrainer:
             classes = classes
         )
     
-    def map_weight_space(self) -> None:
+    def map_weight_space(self,data_filename:Optional[str]=None, sample_step_size:int=10) -> str:
         scores = self._get_scores_for_weight_values(
             output_layer_size=10,
-            sample_step_size=10,
+            sample_step_size=sample_step_size,
             network=self.network,
             x = self.x,
             y = self.y
         )
-        dump(scores, open("test.pkl", 'wb'))
+        data_filename = data_filename if data_filename else f"sample_size_every_{sample_step_size}"
+        dump(scores, open(f"../../data/weight_space_experiment/{data_filename}.pkl", 'wb'))
+        return data_filename
 
    @staticmethod
     def _initialise_neural_network_for_mnist_with_weights_zeroed(

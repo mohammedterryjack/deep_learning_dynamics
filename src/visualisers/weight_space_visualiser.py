@@ -13,8 +13,8 @@ from projection_models.projection_method import ProjectionMethod
 #TODO: if initialised in good areas of the weight space - and see how this affects training
 
 class WeightSpaceVisualiser:
-    def __init__(self, projector:ProjectionMethod) -> None:
-        self.data = read_pickle("test.pkl")
+    def __init__(self, projector:ProjectionMethod,data_filename:str) -> None:
+        self.data = read_pickle(f"../data/weight_space_experiment/{data_filename}.pkl")
         self.trained_projector = projector(
             training_vectors=self.data["weights"], 
             save_model=False
@@ -71,13 +71,3 @@ class WeightSpaceVisualiser:
 
         heatmap(data=matrix)
         show()
-
-
-
-# from projection_models.principal_component_analysis import PrincipalComponentAnalysis
-# from projection_models.autoencoder import AutoEncoder
-# from projection_models.binary_encoder import BinaryEncoder
-
-# WeightSpaceVisualiser(
-#     projector = PrincipalComponentAnalysis,
-# ).visualise_weight_space()

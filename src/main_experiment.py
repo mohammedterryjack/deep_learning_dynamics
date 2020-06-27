@@ -4,19 +4,20 @@ from argparse import ArgumentParser
 from pandas import read_pickle
 ############   LOCAL IMPORTS   ###########################
 from data_loader import DataLoader
-from neural_network import DeepNeuralNetworkTrainer
-from visualiser import Visualiser
+from trainers.neural_network_trainer import DeepNeuralNetworkTrainer
+from visualisers.main_experiment_visualiser import Visualiser
 from projection_models.self_organising_map import SelfOrganisingMap
 from projection_models.principal_component_analysis import PrincipalComponentAnalysis
 from projection_models.autoencoder import AutoEncoder
 from projection_models.autoencoder_tsne import AE_Tsne
 from projection_models.autoencoder_som import AE_SOM
+from projection_models.binary_encoder import BinaryEncoder
 ##########################################################
 parser = ArgumentParser()
 parser.add_argument("--timestamp",type=str, help="load in a previous datafile using its timestamp - e.g. 11h57m01s20June2020")
 parser.add_argument("--average_hidden_layers", action='store_true', default=False, help="pool neural network's hidden layers to reduce network parameters to track")
 parser.add_argument("--train_projection_model_on_first_only", action='store_true', default=False, help="projection model is trained on learning of first neural network but is still used to project parameters of all neural networks - default: trained on all neural networks")
-parser.add_argument("--projection", type=str, choices=("PrincipalComponentAnalysis","SelfOrganisingMap","AutoEncoder","AE_Tsne","AE_SOM"), default="AutoEncoder", help="reduce dimension of network parameters for plotting")
+parser.add_argument("--projection", type=str, choices=("PrincipalComponentAnalysis","SelfOrganisingMap","AutoEncoder","BinaryEncoder","AE_Tsne","AE_SOM"), default="AutoEncoder", help="reduce dimension of network parameters for plotting")
 parser.add_argument("--dataset", type=str, choices=("toy","mnist","omniglot"), default="mnist", help="dataset task for training the neural networks")
 parser.add_argument("--iterations", type=int, choices=range(1,100), default=10, help="training iterations")
 parser.add_argument("--networks", type=int, choices=range(1,10), default=2, help="number of neural networks")
