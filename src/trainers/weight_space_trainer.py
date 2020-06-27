@@ -33,7 +33,7 @@ class WeightSpaceTrainer:
             x = self.x,
             y = self.y
         )
-        data_filename = data_filename if data_filename else f"sample_size_every_{sample_step_size}_ignore_first_layer_{ignore_first_layer}"
+        data_filename = data_filename if data_filename else f"sample_size_every_{sample_step_size}"
         dump(scores, open(f"../../data/weight_space_experiment/{data_filename}.pkl", 'wb'))
         return data_filename
 
