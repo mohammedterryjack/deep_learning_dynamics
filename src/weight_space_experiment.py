@@ -22,7 +22,6 @@ if not filename:
         ignore_first_layer=args.ignore_first_layer
     ).map_weight_space(
         sample_step_size=args.search_step_size,
-        ignore_first_layer=args.ignore_first_layer
     )
 WeightSpaceVisualiser(
     projector = eval(args.projection),

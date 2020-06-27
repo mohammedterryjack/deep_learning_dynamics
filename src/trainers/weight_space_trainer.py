@@ -25,14 +25,8 @@ class WeightSpaceTrainer:
             zero_first_layer_too=not ignore_first_layer
         )
     
-    def map_weight_space(self,data_filename:Optional[str]=None, sample_step_size:int=10, ignore_first_layer:bool=False) -> str:
-        scores = self._get_scores_for_weight_values_ignoring_first_layer(
-            output_layer_size=10,
-            sample_step_size=sample_step_size,
-            network=self.network,
-            x = self.x,
-            y = self.y
-        ) if ignore_first_layer else self._get_scores_for_weight_values(
+    def map_weight_space(self,data_filename:Optional[str]=None, sample_step_size:int=10) -> str:
+        scores = self._get_scores_for_weight_values(
             output_layer_size=10,
             sample_step_size=sample_step_size,
             network=self.network,
@@ -69,25 +63,6 @@ class WeightSpaceTrainer:
             shape=(hidden_layer_size,output_layer_size)
         )
         return network
-
-    @staticmethod
-    def _get_scores_for_weight_values_ignoring_first_layer(
-        output_layer_size:int,
-        sample_step_size:int,
-        network:MLPClassifier,
-        x:Vectors,
-        y:Labels
-    ) -> Dict[Vectors,List[float]]:
-        data = {
-            "weights":[],
-            "scores":[]
-        }
-        for weights in NeuralGridSearch.binary_vector_range(0,output_layer_size,sample_step_size):
-            network.coefs_[1][1] = weights
-            data["weights"].append(weights)
-            data["scores"].append(network.score(x,y))
-            print(network.coefs_)
-        return data 
 
     @staticmethod
     def _get_scores_for_weight_values(
