@@ -17,7 +17,7 @@ parser.add_argument("--filename", type=str, help="load in a previous datafile us
 args = parser.parse_args()
 
 filename = args.filename
-if not filename:
+if args.search_step_size or args.ignore_first_layer:
     filename = WeightSpaceTrainer(
         ignore_first_layer=args.ignore_first_layer
     ).map_weight_space(
