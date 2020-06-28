@@ -36,7 +36,7 @@ if not args.timestamp:
 
 Visualiser.plot_coordinates(
     data_to_plot= read_pickle(
-        f"../data/{args.timestamp}.pkl"
+        f"../data/main_experiment/{args.timestamp}.pkl"
     ) if args.timestamp else DeepNeuralNetworkTrainer.learn(
         training_inputs=x,
         training_outputs=y,

@@ -8,9 +8,6 @@ from pandas import read_pickle
 ############   LOCAL IMPORTS   ###########################
 from projection_models.projection_method import ProjectionMethod
 ##########################################################
-#TODO: (find corresponding weight for that coordinate and test network)
-#TODO: work out which weights produced the better scores from the heatmap (i.e. convert their coordinates back to weights) and see if there is anything in common with them
-#TODO: if initialised in good areas of the weight space - and see how this affects training
 
 class WeightSpaceVisualiser:
     def __init__(self, projector:ProjectionMethod,data_filename:str) -> None:

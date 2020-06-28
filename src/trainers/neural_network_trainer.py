@@ -13,6 +13,10 @@ from pandas import DataFrame
 from data_types import Vectors,Labels,DataFrameNames
 from projection_models.projection_method import ProjectionMethod
 ##########################################################
+#TODO: train projectors on data from other experiment as it has more range of values 
+#TODO: if initialised in good areas of the weight space (determined by other experiment) - and see how this affects training
+#TODO: initialise using pre-trained networks
+
 TRAINING_MESSAGE = """
 network = {network_index}
 iteration = {training_iteration}
@@ -100,8 +104,8 @@ class DeepNeuralNetworkTrainer:
     @staticmethod
     def save(data:DataFrame,meta_data:dict) -> None:
         filename = DeepNeuralNetworkTrainer.now_as_a_string()
-        data.to_pickle(f"../data/{filename}.pkl")
-        with open(f"../data/{filename}.json",'w') as file_to_write_to:
+        data.to_pickle(f"../data/main_experiment/{filename}.pkl")
+        with open(f"../data/main_experiment/{filename}.json",'w') as file_to_write_to:
             file_to_write_to.write(dumps(meta_data,indent=3))
         print(f"data saved - {filename}")
 
