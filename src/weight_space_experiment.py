@@ -18,7 +18,7 @@ parser.add_argument("--filename", type=str, help="load in a previous datafile us
 args = parser.parse_args()
 
 filename = args.filename
-if args.search_step_size or args.freeze_first_layer:
+if args.train:
     filename = WeightSpaceTrainer(
         freeze_first_layer=args.freeze_first_layer
     ).map_weight_space(
