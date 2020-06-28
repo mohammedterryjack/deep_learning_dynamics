@@ -20,7 +20,7 @@ class WeightSpaceVisualiser:
             save_model=False
         )
 
-    def visualise_weight_space(self) -> None:
+    def visualise_weight_space(self, resolution:int=30) -> None:
         coordinates = self.trained_projector.reduce_dimensions(
             vectors= self.data["weights"]
         )
@@ -33,7 +33,7 @@ class WeightSpaceVisualiser:
             max(x_coordinates),
             max(y_coordinates)
         )
-        scale = 100 / upper_bound_float
+        scale = resolution / upper_bound_float
         float_to_int = lambda number: int((number + abs(lower_bound_float))*scale)
         lower_bound_int = float_to_int(lower_bound_float)
         upper_bound_int = float_to_int(upper_bound_float)
