@@ -12,7 +12,7 @@ from matplotlib.colors import Normalize
 from projection_models.projection_method import ProjectionMethod
 from projection_models.autoencoder import AutoEncoder
 from data_loader import DataLoader
-from data_types import dataDataFrameNames, Vectors, Labels
+from data_types import DataFrameNames, Vectors, Labels
 ##########################################################
 colour_scaler = Normalize()
 
