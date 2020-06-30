@@ -7,6 +7,7 @@ from matplotlib.pyplot import show
 from pandas import read_pickle
 ############   LOCAL IMPORTS   ###########################
 from projection_models.projection_method import ProjectionMethod
+from data_types import Vectors
 ##########################################################
 
 class WeightSpaceVisualiser:
@@ -21,6 +22,14 @@ class WeightSpaceVisualiser:
         coordinates = self.trained_projector.reduce_dimensions(
             vectors= self.data["weights"]
         )
+        WeightSpaceVisualiser._visualise_weight_space(
+            coordinates=coordinates,
+            scores = self.data["scpres"]
+            resolution=resolution
+        )
+
+    @staticmethod
+    def _visualise_weight_space(coordinates:Vectors, scores:List[float], resolution:int) -> None:
         x_coordinates,y_coordinates = list(zip(*coordinates))
         lower_bound_float = min(
             min(x_coordinates),
@@ -43,11 +52,11 @@ class WeightSpaceVisualiser:
             upper_bound_int = {upper_bound_int}
             """
         )
-        self._show_heatmap(
+        WeightSpaceVisualiser._show_heatmap(
             size = (upper_bound_int - lower_bound_int) + 1,
             x_coordinates_as_ints = map(float_to_int,x_coordinates),
             y_coordinates_as_ints = map(float_to_int,y_coordinates),
-            scores = self.data["scores"]
+            scores = scores
         )
         
     @staticmethod

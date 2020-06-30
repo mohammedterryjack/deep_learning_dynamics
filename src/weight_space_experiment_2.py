@@ -30,15 +30,16 @@ trainer = InitialisingWeightsTrainer(
 )
 data = trainer.learn(training_iterations=args.iterations)
 Visualiser.plot_coordinates(data)
-wsv = WeightSpaceVisualiser(
-    projector=BinaryEncoder,
-    data_filename="sample_size_every_10"
-)
-wsv.trained_projector = trainer.trained_projector
+trainer.trained_projector
 print(wsv.data)
 print()
 print(data)
 #TODO: merge dataframes so that heatmap shows brighter patch of the learning trajectory
+#data: ["x coordinate", "y coordinate", "score"] ["color"]
 #merged_data = merge(wsv.data,data[['Key_Column','Target_Column']],on='Key_Column', how='left')
 #wsv.data = merged_data 
-wsv.visualise_weight_space()
+WeightSpaceVisualiser._visualise_weight_space(
+    coordinates=,
+    scores=,
+    resolution=30
+)
