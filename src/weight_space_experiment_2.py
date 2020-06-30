@@ -1,9 +1,11 @@
 ############   NATIVE IMPORTS  ###########################
 from argparse import ArgumentParser
 ############ INSTALLED IMPORTS ###########################
+from pandas import merge
 ############   LOCAL IMPORTS   ###########################
 from trainers.initialising_weights_trainer import InitialisingWeightsTrainer
 from visualisers.main_experiment_visualiser import Visualiser
+from visualisers.weight_space_visualiser import WeightSpaceVisualiser
 from projection_models.principal_component_analysis import PrincipalComponentAnalysis
 from projection_models.autoencoder import AutoEncoder
 from projection_models.binary_encoder import BinaryEncoder
@@ -28,3 +30,15 @@ trainer = InitialisingWeightsTrainer(
 )
 data = trainer.learn(training_iterations=args.iterations)
 Visualiser.plot_coordinates(data)
+wsv = WeightSpaceVisualiser(
+    projector=BinaryEncoder,
+    data_filename="sample_size_every_10"
+)
+wsv.trained_projector = trainer.trained_projector
+print(wsv.data)
+print()
+print(data)
+#TODO: merge dataframes so that heatmap shows brighter patch of the learning trajectory
+#merged_data = merge(wsv.data,data[['Key_Column','Target_Column']],on='Key_Column', how='left')
+#wsv.data = merged_data 
+wsv.visualise_weight_space()
