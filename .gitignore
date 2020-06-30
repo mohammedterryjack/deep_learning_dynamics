@@ -1,5 +1,4 @@
 *.pyc
-*.sav
 .vscode/*
 .tmp.drivedownload
 plots/*
