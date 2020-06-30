@@ -1,5 +1,5 @@
 ############   NATIVE IMPORTS  ###########################
-from typing import Optional, Tuple, List, Union, Union
+from typing import Optional, Tuple, List, Union
 from datetime import datetime 
 from json import dumps
 from copy import deepcopy
@@ -13,8 +13,6 @@ from pandas import DataFrame
 from data_types import Vectors,Labels,DataFrameNames
 from projection_models.projection_method import ProjectionMethod
 ##########################################################
-#TODO: train projectors on data from other experiment as it has more range of values 
-#TODO: if initialised in good areas of the weight space (determined by other experiment) - and see how this affects training
 #TODO: initialise using pre-trained networks
 
 TRAINING_MESSAGE = """

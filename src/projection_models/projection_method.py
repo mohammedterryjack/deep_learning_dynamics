@@ -7,7 +7,7 @@ from typing import Any
 class ProjectionMethod:
     """Dimensionality Reduction"""
     def save_model(self,model:Any,filename:str):
-        dump(model, open(f"../data/{filename}.sav", 'wb'))
+        dump(model, open(f"../data/trained_models/{filename}.sav", 'wb'))
 
     def load_model(self,filename:str) -> Any:
-        return load(open(f"../data/{filename}.sav", 'rb'))
+        return load(open(f"../data/trained_models/{filename}.sav", 'rb'))
