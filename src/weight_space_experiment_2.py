@@ -21,6 +21,7 @@ args = parser.parse_args()
 #TODO: if initialised in good areas of the weight space (determined by other experiment) - and see how this affects training
 from numpy import ones
 
+
 trainer = InitialisingWeightsTrainer(
     initialisation_vector = ones(shape=(2,10)),
     projector = eval(args.projection),
