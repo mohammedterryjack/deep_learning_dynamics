@@ -11,6 +11,7 @@ from projection_models.self_organising_map import SelfOrganisingMap
 ##########################################################
 parser = ArgumentParser()
 parser.add_argument("--projection", type=str, choices=("PrincipalComponentAnalysis","SelfOrganisingMap","AutoEncoder","BinaryEncoder"), default="AutoEncoder", help="reduce dimension of network parameters for plotting")
+parser.add_argument("--iterations", type=int, choices=range(1,100), default=10, help="training iterations")
 args = parser.parse_args()
 
 #TODO: initialise from good weight spaces and plot learning
@@ -24,5 +25,5 @@ trainer = InitialisingWeightsTrainer(
     initialisation_vector = zeros(shape=(2,10)),
     projector = eval(args.projection)
 )
-data = trainer.learn(training_iterations=3)
+data = trainer.learn(training_iterations=args.iterations)
 Visualiser.plot_coordinates(data)
