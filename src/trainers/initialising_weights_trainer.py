@@ -19,7 +19,7 @@ colour_scaler = Normalize()
 class InitialisingWeightsTrainer:
     """Compare the learning trajectories of neural networks beginning from specific weight initialisations """
 
-    def __init__(self, initialisation_vector:array, projector:ProjectionMethod) -> None:
+    def __init__(self, initialisation_vector:array, projector:ProjectionMethod,autoencoder_selected:bool) -> None:
         self.x,self.y,self.classes = DataLoader.load("mnist")
         self.network = self._initialise_neural_network_for_mnist_with_weights_initialised_to_vector(
             input_layer_size=784,
@@ -30,21 +30,20 @@ class InitialisingWeightsTrainer:
             classes = self.classes,
             initialisation_vector = initialisation_vector,
         )
-        self.trained_projector = self._initialise_projector(projector) 
+        self.trained_projector = self._initialise_projector(projector,is_autoencoder=autoencoder_selected) 
     
     @staticmethod
-    def _initialise_projector(projector:ProjectionMethod) -> ProjectionMethod:
-        if isinstance(projector, AutoEncoder):
+    def _initialise_projector(projector:ProjectionMethod, is_autoencoder:bool) -> ProjectionMethod:
+        if is_autoencoder:
             try:
                 return load(open("../data/trained_models/autoencoder_trained_on_sample_size_every_10.sav", 'rb'))
             except:
                 pass 
-        training_vectors = read_pickle("../data/weight_space_experiment/sample_size_every_10.pkl")["weights"]
         trained_projector = projector(
-            training_vectors=training_vectors, 
+            training_vectors=read_pickle("../data/weight_space_experiment/sample_size_every_10.pkl")["weights"], 
             save_model=False
         )
-        if isinstance(trained_projector, AutoEncoder):
+        if is_autoencoder:
             dump(trained_projector, open("../data/trained_models/autoencoder_trained_on_sample_size_every_10.sav", 'wb'))
         return trained_projector
 

@@ -19,11 +19,12 @@ args = parser.parse_args()
 #TODO: plot training of both on same plot (average)
 #TODO: train projectors on data from other experiment as it has more range of values 
 #TODO: if initialised in good areas of the weight space (determined by other experiment) - and see how this affects training
-from numpy import zeros
+from numpy import ones
 
 trainer = InitialisingWeightsTrainer(
-    initialisation_vector = zeros(shape=(2,10)),
-    projector = eval(args.projection)
+    initialisation_vector = ones(shape=(2,10)),
+    projector = eval(args.projection),
+    autoencoder_selected = args.projection == "AutoEncoder"
 )
 data = trainer.learn(training_iterations=args.iterations)
 Visualiser.plot_coordinates(data)
