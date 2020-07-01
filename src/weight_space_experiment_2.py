@@ -16,7 +16,6 @@ parser.add_argument("--projection", type=str, choices=("PrincipalComponentAnalys
 parser.add_argument("--iterations", type=int, choices=range(1,100), default=10, help="training iterations")
 args = parser.parse_args()
 
-#TODO: save screenshots for each projection type for heatmaps
 #TODO: initialise from several good weight spaces and plot learning
 #TODO: initialise from several bad weight spaces and plot learning
 #TODO: plot training of both on same plot (average)
