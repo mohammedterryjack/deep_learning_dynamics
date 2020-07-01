@@ -1,7 +1,7 @@
 ############   NATIVE IMPORTS  ###########################
 from argparse import ArgumentParser
 ############ INSTALLED IMPORTS ###########################
-from pandas import merge
+from pandas import read_pickle
 ############   LOCAL IMPORTS   ###########################
 from trainers.initialising_weights_trainer import InitialisingWeightsTrainer
 from visualisers.main_experiment_visualiser import Visualiser
@@ -29,17 +29,16 @@ trainer = InitialisingWeightsTrainer(
     autoencoder_selected = args.projection == "AutoEncoder"
 )
 data = trainer.learn(training_iterations=args.iterations)
+#TODO: shift all scores by 1 to see on heatmap
 Visualiser.plot_coordinates(data)
-trainer.trained_projector
-print(wsv.data)
-print()
-print(data)
-#TODO: merge dataframes so that heatmap shows brighter patch of the learning trajectory
-#data: ["x coordinate", "y coordinate", "score"] ["color"]
-#merged_data = merge(wsv.data,data[['Key_Column','Target_Column']],on='Key_Column', how='left')
-#wsv.data = merged_data 
+loaded_data = read_pickle(f"../data/weight_space_experiment/sample_size_every_10.pkl")
+coordinates = trainer.trained_projector.reduce_dimensions(
+    vectors= loaded_data["weights"]
+)
+x_coordinates,y_coordinates = list(zip(*coordinates))
 WeightSpaceVisualiser._visualise_weight_space(
-    coordinates=,
-    scores=,
+    x_coordinates=x_coordinates + data["x coordinate"].to_list(),
+    y_coordinates=y_coordinates + data["y coordinate"].to_list(),
+    scores=loaded_data["scores"] + data["score"].to_list(),
     resolution=30
 )

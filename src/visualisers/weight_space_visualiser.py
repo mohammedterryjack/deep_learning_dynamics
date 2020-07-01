@@ -22,15 +22,21 @@ class WeightSpaceVisualiser:
         coordinates = self.trained_projector.reduce_dimensions(
             vectors= self.data["weights"]
         )
+        x_coordinates,y_coordinates = list(zip(*coordinates))
         WeightSpaceVisualiser._visualise_weight_space(
-            coordinates=coordinates,
-            scores = self.data["scpres"]
+            x_coordinates=x_coordinates,
+            y_coordinates=y_coordinates,
+            scores = self.data["scores"]
             resolution=resolution
         )
 
     @staticmethod
-    def _visualise_weight_space(coordinates:Vectors, scores:List[float], resolution:int) -> None:
-        x_coordinates,y_coordinates = list(zip(*coordinates))
+    def _visualise_weight_space(
+        x_coordinates:Vectors, 
+        y_coordinates:Vectors,
+        scores:List[float], 
+        resolution:int
+    ) -> None:
         lower_bound_float = min(
             min(x_coordinates),
             min(y_coordinates)
