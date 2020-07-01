@@ -16,8 +16,9 @@ parser.add_argument("--projection", type=str, choices=("PrincipalComponentAnalys
 parser.add_argument("--iterations", type=int, choices=range(1,100), default=10, help="training iterations")
 args = parser.parse_args()
 
-#TODO: initialise from good weight spaces and plot learning
-#TODO: initialise from bad weight spaces and plot learning
+#TODO: save screenshots for each projection type for heatmaps
+#TODO: initialise from several good weight spaces and plot learning
+#TODO: initialise from several bad weight spaces and plot learning
 #TODO: plot training of both on same plot (average)
 #TODO: train projectors on data from other experiment as it has more range of values 
 #TODO: if initialised in good areas of the weight space (determined by other experiment) - and see how this affects training

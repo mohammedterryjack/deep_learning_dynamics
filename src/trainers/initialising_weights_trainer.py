@@ -34,6 +34,7 @@ class InitialisingWeightsTrainer:
     
     @staticmethod
     def _initialise_projector(projector:ProjectionMethod, is_autoencoder:bool) -> ProjectionMethod:
+        #TODO: train and save an SOM projector too
         if is_autoencoder:
             try:
                 return load(open("../data/trained_models/autoencoder_trained_on_sample_size_every_10.sav", 'rb'))
