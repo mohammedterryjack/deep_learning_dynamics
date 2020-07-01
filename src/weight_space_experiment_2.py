@@ -27,7 +27,7 @@ from numpy import ones
 trainer = InitialisingWeightsTrainer(
     initialisation_vector = ones(shape=(2,10)),
     projector = eval(args.projection),
-    autoencoder_selected = args.projection == "AutoEncoder"
+    projector_type = args.projection 
 )
 data = trainer.learn(training_iterations=args.iterations)
 Visualiser.plot_coordinates(data)
@@ -39,6 +39,6 @@ x_coordinates,y_coordinates = list(zip(*coordinates))
 WeightSpaceVisualiser._visualise_weight_space(
     x_coordinates=list(x_coordinates) + data["x coordinate"].to_list(),
     y_coordinates=list(y_coordinates) + data["y coordinate"].to_list(),
-    scores=loaded_data["scores"] + data["score"].apply(lambda x:x+1).to_list(),
+    scores=loaded_data["scores"] + data["score"].to_list(),
     resolution=30
 )
