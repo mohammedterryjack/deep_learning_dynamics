@@ -29,7 +29,6 @@ trainer = InitialisingWeightsTrainer(
     autoencoder_selected = args.projection == "AutoEncoder"
 )
 data = trainer.learn(training_iterations=args.iterations)
-#TODO: shift all scores by 1 to see on heatmap
 Visualiser.plot_coordinates(data)
 loaded_data = read_pickle(f"../data/weight_space_experiment/sample_size_every_10.pkl")
 coordinates = trainer.trained_projector.reduce_dimensions(
@@ -37,8 +36,8 @@ coordinates = trainer.trained_projector.reduce_dimensions(
 )
 x_coordinates,y_coordinates = list(zip(*coordinates))
 WeightSpaceVisualiser._visualise_weight_space(
-    x_coordinates=x_coordinates + data["x coordinate"].to_list(),
-    y_coordinates=y_coordinates + data["y coordinate"].to_list(),
-    scores=loaded_data["scores"] + data["score"].to_list(),
+    x_coordinates=list(x_coordinates) + data["x coordinate"].to_list(),
+    y_coordinates=list(y_coordinates) + data["y coordinate"].to_list(),
+    scores=loaded_data["scores"] + data["score"].apply(lambda x:x+1).to_list(),
     resolution=30
 )

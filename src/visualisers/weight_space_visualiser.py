@@ -26,7 +26,7 @@ class WeightSpaceVisualiser:
         WeightSpaceVisualiser._visualise_weight_space(
             x_coordinates=x_coordinates,
             y_coordinates=y_coordinates,
-            scores = self.data["scores"]
+            scores = self.data["scores"],
             resolution=resolution
         )
 
