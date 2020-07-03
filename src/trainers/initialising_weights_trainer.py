@@ -5,7 +5,7 @@ from pickle import dump, load
 ############ INSTALLED IMPORTS ###########################
 from pandas import read_pickle, DataFrame
 from sklearn.neural_network import MLPClassifier
-from numpy import zeros, array
+from numpy import array, zeros
 from matplotlib.cm import inferno
 from matplotlib.colors import Normalize
 ############   LOCAL IMPORTS   ###########################
@@ -19,22 +19,12 @@ colour_scaler = Normalize()
 class InitialisingWeightsTrainer:
     """Compare the learning trajectories of neural networks beginning from specific weight initialisations """
 
-    def __init__(self, initialisation_vector:array, projector:ProjectionMethod,projector_type:str) -> None:
+    def __init__(self, projector:ProjectionMethod,projector_type:str) -> None:
         self.x,self.y,self.classes = DataLoader.load("mnist")
-        self.network = self._initialise_neural_network_for_mnist_with_weights_initialised_to_vector(
-            input_layer_size=784,
-            hidden_layer_size=2,
-            output_layer_size=10,
-            x = self.x,
-            y = self.y,
-            classes = self.classes,
-            initialisation_vector = initialisation_vector,
-        )
         self.trained_projector = self._initialise_projector(projector,projector_class=projector_type) 
     
     @staticmethod
     def _initialise_projector(projector:ProjectionMethod, projector_class:str) -> ProjectionMethod:
-        #TODO: train and save an SOM projector too
         if projector_class == "AutoEncoder":
             try:
                 return load(open("../data/trained_models/autoencoder_trained_on_sample_size_every_10.sav", 'rb'))
@@ -71,7 +61,8 @@ class InitialisingWeightsTrainer:
             activation = "relu", 
             alpha=1e-4,
             solver="sgd", 
-            learning_rate_init=.1
+            learning_rate_init=.1,
+            verbose=True
         )
         network.partial_fit(x, y, classes)
         network.coefs_[0][:][:] = zeros(
@@ -80,16 +71,46 @@ class InitialisingWeightsTrainer:
         network.coefs_[1][:][:] = initialisation_vector
         return network
 
-    def learn(self, training_iterations:int) -> DataFrame:
+    @staticmethod
+    def _get_initialisation_vectors(score_selector:callable, max_vectors:int=10) -> List[array]:
+        data = read_pickle("../data/weight_space_experiment/sample_size_every_10.pkl")
+        optimal_score = score_selector(score for score in data["scores"])
+        initialisations = [
+            array(weight).reshape(2,10) for weight,score in zip(
+                data["weights"],
+                data["scores"]
+            ) if score == optimal_score
+        ]
+        return initialisations[:max_vectors]
+
+    def learn(self, training_iterations:int, score_selector:callable) -> DataFrame:
         """ N learning iterations for M neural networks """
-                
-        learning_dynamics, scores, labels = self._learn(
-            network = self.network,
-            classes = self.classes,
-            training_inputs = self.x, 
-            training_outputs = self.y, 
-            iterations = training_iterations,
-        )
+        
+        learning_dynamics = []
+        scores = []
+        labels = []
+        for network_index,initialisation_vector in enumerate(
+            self._get_initialisation_vectors(score_selector=score_selector)
+        ):
+            learning_dynamics_, scores_, labels_ = self._learn(
+                classes = self.classes,
+                training_inputs = self.x, 
+                training_outputs = self.y, 
+                iterations = training_iterations,
+                network =  self._initialise_neural_network_for_mnist_with_weights_initialised_to_vector(
+                    input_layer_size=784,
+                    hidden_layer_size=2,
+                    output_layer_size=10,
+                    x = self.x,
+                    y = self.y,
+                    classes = self.classes,
+                    initialisation_vector = initialisation_vector,
+                ),
+            )
+            labels_ = list(map(lambda label:f"network_{network_index}:{label}", labels_))
+            learning_dynamics.extend(learning_dynamics_)
+            scores.extend(scores_)
+            labels.extend(labels_)
         return self._wrap_as_dataframe(
             coordinates=self.trained_projector.reduce_dimensions(learning_dynamics),
             vectors=learning_dynamics,
