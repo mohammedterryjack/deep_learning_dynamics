@@ -22,9 +22,12 @@ args = parser.parse_args()
 trainer = InitialisingWeightsTrainer(
     projector = eval(args.projection),
     projector_type = args.projection,
+)
+data = trainer.learn(
+    training_iterations=args.iterations, 
+    score_selector=eval(args.initialisation),
     number_of_vectors = args.samples
 )
-data = trainer.learn(training_iterations=args.iterations, score_selector=eval(args.initialisation))
 Visualiser.plot_coordinates(data)
 loaded_data = read_pickle(f"../data/weight_space_experiment/sample_size_every_10.pkl")
 coordinates = trainer.trained_projector.reduce_dimensions(
