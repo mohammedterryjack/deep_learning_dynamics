@@ -15,12 +15,14 @@ parser = ArgumentParser()
 parser.add_argument("--projection", type=str, choices=("PrincipalComponentAnalysis","SelfOrganisingMap","AutoEncoder","BinaryEncoder"), default="AutoEncoder", help="reduce dimension of network parameters for plotting")
 parser.add_argument("--iterations", type=int, choices=range(1,100), default=10, help="training iterations")
 parser.add_argument("--resolution", type=int, choices=range(10,1000), default=30, help="dimension of heatmap")
+parser.add_argument("--samples", type=int, choices=range(1,500), default=3, help="number of samples to plot")
 parser.add_argument("--initialisation", type=str, choices=("min","max"), default="max", help="initialisations at best (max) or worst (min) places in weight space")
 args = parser.parse_args()
 
 trainer = InitialisingWeightsTrainer(
     projector = eval(args.projection),
-    projector_type = args.projection 
+    projector_type = args.projection,
+    number_of_vectors = args.samples
 )
 data = trainer.learn(training_iterations=args.iterations, score_selector=eval(args.initialisation))
 Visualiser.plot_coordinates(data)

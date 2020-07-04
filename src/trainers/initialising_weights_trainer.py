@@ -83,14 +83,14 @@ class InitialisingWeightsTrainer:
         ]
         return initialisations[:max_vectors]
 
-    def learn(self, training_iterations:int, score_selector:callable) -> DataFrame:
+    def learn(self, training_iterations:int, score_selector:callable, number_of_vectors:int) -> DataFrame:
         """ N learning iterations for M neural networks """
         
         learning_dynamics = []
         scores = []
         labels = []
         for network_index,initialisation_vector in enumerate(
-            self._get_initialisation_vectors(score_selector=score_selector)
+            self._get_initialisation_vectors(score_selector=score_selector, max_vectors=number_of_vectors)
         ):
             learning_dynamics_, scores_, labels_ = self._learn(
                 classes = self.classes,
