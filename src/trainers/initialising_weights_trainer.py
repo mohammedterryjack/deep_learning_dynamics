@@ -81,6 +81,7 @@ class InitialisingWeightsTrainer:
                 data["scores"]
             ) if score == optimal_score
         ]
+        return [initialisations[max_vectors] for _ in range(max_vectors)]
         return initialisations[:max_vectors]
 
     def learn(self, training_iterations:int, score_selector:callable, number_of_networks:int) -> DataFrame:
@@ -151,6 +152,7 @@ class InitialisingWeightsTrainer:
                 classes=classes, 
                 training_inputs=training_inputs, 
                 training_outputs=training_outputs, 
+                skip_training = i==0,
             )                
             score = network.score(training_inputs, training_outputs)
             for layer_id in range(1,2):
@@ -171,9 +173,11 @@ class InitialisingWeightsTrainer:
         classes:Labels,
         training_inputs:Vectors, 
         training_outputs:Labels,
+        skip_training:bool=False,
     ) -> Union[Vectors,array]: 
         """ single learning iteration for a single neural network """
-        network.partial_fit(training_inputs, training_outputs, classes)
+        if not skip_training:
+            network.partial_fit(training_inputs, training_outputs, classes)
         return list(map(InitialisingWeightsTrainer._convert_matrix_into_vector_by_reshaping,network.coefs_))
 
     @staticmethod
