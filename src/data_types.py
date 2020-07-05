@@ -14,4 +14,5 @@ class DataFrameNames:
     VECTOR = "vector"
     NETWORK_NAME = "neural network"
     NETWORK_SCORE = "score"
+    NETWORK_ITERATION = "iteration"
     COLOUR = "colour"

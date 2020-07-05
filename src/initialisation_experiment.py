@@ -6,6 +6,7 @@ from pandas import read_pickle
 from trainers.initialising_weights_trainer import InitialisingWeightsTrainer
 from visualisers.main_experiment_visualiser import Visualiser
 from visualisers.weight_space_visualiser import WeightSpaceVisualiser
+from visualisers.initialisation_experiment_visualiser import InitialisationVisualiser
 from projection_models.principal_component_analysis import PrincipalComponentAnalysis
 from projection_models.autoencoder import AutoEncoder
 from projection_models.binary_encoder import BinaryEncoder
@@ -16,6 +17,7 @@ parser.add_argument("--projection", type=str, choices=("PrincipalComponentAnalys
 parser.add_argument("--iterations", type=int, choices=range(1,100), default=10, help="training iterations")
 parser.add_argument("--resolution", type=int, choices=range(10,200), default=30, help="dimension of heatmap")
 parser.add_argument("--samples", type=int, choices=range(1,500), default=3, help="number of samples to plot")
+parser.add_argument("--repetitions", type=int, choices=range(1,10), default=2, help="number of times to repeat same sample")
 parser.add_argument("--initialisation", type=str, choices=("min","max"), default="max", help="initialisations at best (max) or worst (min) places in weight space")
 args = parser.parse_args()
 
@@ -26,9 +28,11 @@ trainer = InitialisingWeightsTrainer(
 data = trainer.learn(
     training_iterations=args.iterations, 
     score_selector=eval(args.initialisation),
-    number_of_networks = args.samples
+    number_of_samples = args.samples,
+    repetition_of_sample = args.repetitions,
 )
 Visualiser.plot_coordinates(data)
+InitialisationVisualiser.plot_scores(data)
 loaded_data = read_pickle(f"../data/weight_space_experiment/sample_size_every_10.pkl")
 coordinates = trainer.trained_projector.reduce_dimensions(
     vectors= loaded_data["weights"]

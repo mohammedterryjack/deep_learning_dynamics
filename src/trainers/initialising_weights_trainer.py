@@ -72,7 +72,7 @@ class InitialisingWeightsTrainer:
         return network
 
     @staticmethod
-    def _get_initialisation_vectors(score_selector:callable, max_vectors:int=10) -> List[array]:
+    def _get_initialisation_vectors(score_selector:callable, max_vectors:int, repeats:int) -> List[array]:
         data = read_pickle("../data/weight_space_experiment/sample_size_every_10.pkl")
         optimal_score = score_selector(score for score in data["scores"])
         initialisations = [
@@ -81,22 +81,25 @@ class InitialisingWeightsTrainer:
                 data["scores"]
             ) if score == optimal_score
         ]
-        return [initialisations[max_vectors] for _ in range(max_vectors)]
-        return initialisations[:max_vectors]
+        return [
+            initialisation for initialisation in initialisations[:max_vectors] for _ in range(repeats)
+        ]
 
-    def learn(self, training_iterations:int, score_selector:callable, number_of_networks:int) -> DataFrame:
+    def learn(self, training_iterations:int, score_selector:callable, number_of_samples:int, repetition_of_sample:int) -> DataFrame:
         """ N learning iterations for M neural networks """
         
         learning_dynamics = []
         scores = []
         labels = []
+        iterations = []
         for network_index,initialisation_vector in enumerate(
             self._get_initialisation_vectors(
                 score_selector=score_selector, 
-                max_vectors=number_of_networks
+                max_vectors=number_of_samples,
+                repeats = repetition_of_sample
             )
         ):
-            learning_dynamics_, scores_, labels_ = self._learn(
+            learning_dynamics_, scores_, labels_, iterations_ = self._learn(
                 classes = self.classes,
                 training_inputs = self.x, 
                 training_outputs = self.y, 
@@ -115,20 +118,29 @@ class InitialisingWeightsTrainer:
             learning_dynamics.extend(learning_dynamics_)
             scores.extend(scores_)
             labels.extend(labels_)
+            iterations.extend(iterations_)
         return self._wrap_as_dataframe(
             coordinates=self.trained_projector.reduce_dimensions(learning_dynamics),
             vectors=learning_dynamics,
             network_scores=scores,
-            network_names=labels
+            network_names=labels,
+            iteration_names=iterations
         )
 
     @staticmethod
-    def _wrap_as_dataframe(coordinates:Vectors, vectors:Vectors, network_names:Labels, network_scores:List[float]) -> DataFrame:
+    def _wrap_as_dataframe(
+        coordinates:Vectors,
+        vectors:Vectors, 
+        network_names:Labels, 
+        network_scores:List[float],
+        iteration_names:List[int]
+    ) -> DataFrame:
         colour_scaler.autoscale(network_scores)
         data = DataFrame(data=coordinates, columns=[DataFrameNames.X_COORDINATE,DataFrameNames.Y_COORDINATE])
         data[DataFrameNames.VECTOR] = vectors
         data[DataFrameNames.NETWORK_NAME] = network_names
         data[DataFrameNames.NETWORK_SCORE] = network_scores
+        data[DataFrameNames.NETWORK_ITERATION] = iteration_names
         data[DataFrameNames.COLOUR] = list(map(list, inferno(colour_scaler(network_scores))))
         print(data)
         return data        
@@ -140,19 +152,20 @@ class InitialisingWeightsTrainer:
         training_inputs:Vectors, 
         training_outputs:Labels, 
         iterations:int,
-    ) -> Tuple[Vectors,List[float],Labels]:
+    ) -> Tuple[Vectors,List[float],Labels,Labels]:
         """ N learning iterations for a single neural network """
 
         vectors_over_time = []
         scores_over_time = []
         network_names = []
-        for i in range(iterations):
+        iterations_per_network = []
+        for iteration in range(iterations):
             vectors = InitialisingWeightsTrainer._step(
                 network=network, 
                 classes=classes, 
                 training_inputs=training_inputs, 
                 training_outputs=training_outputs, 
-                skip_training = i==0,
+                skip_training = iteration==0,
             )                
             score = network.score(training_inputs, training_outputs)
             for layer_id in range(1,2):
@@ -164,7 +177,8 @@ class InitialisingWeightsTrainer:
                 )
                 scores_over_time.append(score)
                 network_names.append(f"layer:{layer_id}")
-        return vectors_over_time, scores_over_time, network_names
+                iterations_per_network.appent(iteration)
+        return vectors_over_time, scores_over_time, network_names, iterations_per_network
 
 
     @staticmethod
