@@ -100,6 +100,7 @@ class InitialisingWeightsTrainer:
             )
         ):
             for _ in range(repetition_of_sample):
+                sample_labels_ = [sample_index for _ in range(iterations)]
                 learning_dynamics_, scores_, network_labels_, iterations_ = self._learn(
                     classes = self.classes,
                     training_inputs = self.x, 
@@ -120,7 +121,7 @@ class InitialisingWeightsTrainer:
                 scores.extend(scores_)
                 network_labels.extend(network_labels_)
                 iterations.extend(iterations_)
-                sample_labels.append(sample_index)
+                sample_labels.extend(sample_labels_)
                 network_index += 1
 
         return self._wrap_as_dataframe(
