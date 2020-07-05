@@ -115,13 +115,12 @@ class InitialisingWeightsTrainer:
                         initialisation_vector = initialisation_vector,
                     ),
                 )
-                sample_labels_.append(sample_index)
                 labels_ = list(map(lambda label:f"network_{network_index}:{label}", labels_))
                 learning_dynamics.extend(learning_dynamics_)
                 scores.extend(scores_)
                 network_labels.extend(network_labels_)
-                sample_labels.extend(sample_labels_)
                 iterations.extend(iterations_)
+                sample_labels.append(sample_index)
                 network_index += 1
 
         return self._wrap_as_dataframe(
