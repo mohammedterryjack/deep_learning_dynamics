@@ -100,7 +100,7 @@ class InitialisingWeightsTrainer:
             )
         ):
             for _ in range(repetition_of_sample):
-                sample_labels_ = [sample_index for _ in range(iterations)]
+                sample_labels_ = [sample_index for _ in range(training_iterations)]
                 learning_dynamics_, scores_, network_labels_, iterations_ = self._learn(
                     classes = self.classes,
                     training_inputs = self.x, 
