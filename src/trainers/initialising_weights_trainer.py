@@ -115,7 +115,7 @@ class InitialisingWeightsTrainer:
                         initialisation_vector = initialisation_vector,
                     ),
                 )
-                labels_ = list(map(lambda label:f"network_{network_index}:{label}", labels_))
+                network_labels_ = list(map(lambda label:f"network_{network_index}:{label}", network_labels_))
                 learning_dynamics.extend(learning_dynamics_)
                 scores.extend(scores_)
                 network_labels.extend(network_labels_)
