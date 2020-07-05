@@ -16,3 +16,4 @@ class DataFrameNames:
     NETWORK_SCORE = "score"
     NETWORK_ITERATION = "iteration"
     COLOUR = "colour"
+    SAMPLE = "sample"

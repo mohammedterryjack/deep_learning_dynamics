@@ -72,7 +72,7 @@ class InitialisingWeightsTrainer:
         return network
 
     @staticmethod
-    def _get_initialisation_vectors(score_selector:callable, max_vectors:int, repeats:int) -> List[array]:
+    def _get_initialisation_vectors(score_selector:callable, max_vectors:int) -> List[array]:
         data = read_pickle("../data/weight_space_experiment/sample_size_every_10.pkl")
         optimal_score = score_selector(score for score in data["scores"])
         initialisations = [
@@ -81,49 +81,55 @@ class InitialisingWeightsTrainer:
                 data["scores"]
             ) if score == optimal_score
         ]
-        return [
-            initialisation for initialisation in initialisations[:max_vectors] for _ in range(repeats)
-        ]
+        return initialisations[:max_vectors]
 
     def learn(self, training_iterations:int, score_selector:callable, number_of_samples:int, repetition_of_sample:int) -> DataFrame:
         """ N learning iterations for M neural networks """
         
         learning_dynamics = []
         scores = []
-        labels = []
+        network_labels = []
+        sample_labels = []
         iterations = []
-        for network_index,initialisation_vector in enumerate(
+        network_index = 0
+
+        for sample_index,initialisation_vector in enumerate(
             self._get_initialisation_vectors(
                 score_selector=score_selector, 
                 max_vectors=number_of_samples,
-                repeats = repetition_of_sample
             )
         ):
-            learning_dynamics_, scores_, labels_, iterations_ = self._learn(
-                classes = self.classes,
-                training_inputs = self.x, 
-                training_outputs = self.y, 
-                iterations = training_iterations,
-                network =  self._initialise_neural_network_for_mnist_with_weights_initialised_to_vector(
-                    input_layer_size=784,
-                    hidden_layer_size=2,
-                    output_layer_size=10,
-                    x = self.x,
-                    y = self.y,
+            for _ in range(repetition_of_sample):
+                learning_dynamics_, scores_, network_labels_, iterations_ = self._learn(
                     classes = self.classes,
-                    initialisation_vector = initialisation_vector,
-                ),
-            )
-            labels_ = list(map(lambda label:f"network_{network_index}:{label}", labels_))
-            learning_dynamics.extend(learning_dynamics_)
-            scores.extend(scores_)
-            labels.extend(labels_)
-            iterations.extend(iterations_)
+                    training_inputs = self.x, 
+                    training_outputs = self.y, 
+                    iterations = training_iterations,
+                    network =  self._initialise_neural_network_for_mnist_with_weights_initialised_to_vector(
+                        input_layer_size=784,
+                        hidden_layer_size=2,
+                        output_layer_size=10,
+                        x = self.x,
+                        y = self.y,
+                        classes = self.classes,
+                        initialisation_vector = initialisation_vector,
+                    ),
+                )
+                sample_labels_.append(sample_index)
+                labels_ = list(map(lambda label:f"network_{network_index}:{label}", labels_))
+                learning_dynamics.extend(learning_dynamics_)
+                scores.extend(scores_)
+                network_labels.extend(network_labels_)
+                sample_labels.extend(sample_labels_)
+                iterations.extend(iterations_)
+                network_index += 1
+
         return self._wrap_as_dataframe(
             coordinates=self.trained_projector.reduce_dimensions(learning_dynamics),
             vectors=learning_dynamics,
             network_scores=scores,
-            network_names=labels,
+            network_names=network_labels,
+            sample_names= sample_labels,
             iteration_names=iterations
         )
 
@@ -133,7 +139,8 @@ class InitialisingWeightsTrainer:
         vectors:Vectors, 
         network_names:Labels, 
         network_scores:List[float],
-        iteration_names:List[int]
+        iteration_names:List[int],
+        sample_names:Labels
     ) -> DataFrame:
         colour_scaler.autoscale(network_scores)
         data = DataFrame(data=coordinates, columns=[DataFrameNames.X_COORDINATE,DataFrameNames.Y_COORDINATE])
@@ -141,6 +148,7 @@ class InitialisingWeightsTrainer:
         data[DataFrameNames.NETWORK_NAME] = network_names
         data[DataFrameNames.NETWORK_SCORE] = network_scores
         data[DataFrameNames.NETWORK_ITERATION] = iteration_names
+        data[DataFrameNames.SAMPLE] = sample_names
         data[DataFrameNames.COLOUR] = list(map(list, inferno(colour_scaler(network_scores))))
         print(data)
         return data        

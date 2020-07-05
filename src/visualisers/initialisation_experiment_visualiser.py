@@ -14,6 +14,6 @@ class InitialisationVisualiser:
             data=data_to_plot,
             x=DataFrameNames.NETWORK_ITERATION,
             y=DataFrameNames.NETWORK_SCORE,
-            style=DataFrameNames.NETWORK_NAME
+            style=DataFrameNames.SAMPLE
         )
         show()
