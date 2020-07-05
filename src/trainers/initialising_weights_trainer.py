@@ -177,7 +177,7 @@ class InitialisingWeightsTrainer:
                 )
                 scores_over_time.append(score)
                 network_names.append(f"layer:{layer_id}")
-                iterations_per_network.appent(iteration)
+                iterations_per_network.append(iteration)
         return vectors_over_time, scores_over_time, network_names, iterations_per_network
 
 
