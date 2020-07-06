@@ -7,6 +7,7 @@ from matplotlib.pyplot import show
 from data_types import DataFrameNames
 ##########################################################
 
+#TODO: make a line plot where dataset contains both good and bad initialisations and the style is based on the good or bad label (then test for more samples)
 class InitialisationVisualiser:
     @staticmethod
     def plot_scores(data_to_plot:DataFrame) -> None:
