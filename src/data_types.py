@@ -18,3 +18,4 @@ class DataFrameNames:
     COLOUR = "colour"
     SAMPLE = "sample"
     REPETITION = "repetition"
+    INITIALISATION_STATE = "initialisation"

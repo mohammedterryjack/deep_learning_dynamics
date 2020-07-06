@@ -83,7 +83,7 @@ class InitialisingWeightsTrainer:
         ]
         return initialisations[:max_vectors]
 
-    def learn(self, training_iterations:int, score_selector:callable, number_of_samples:int, repetition_of_sample:int) -> DataFrame:
+    def learn(self, training_iterations:int, number_of_samples:int, repetition_of_sample:int) -> DataFrame:
         """ N learning iterations for M neural networks """
         
         learning_dynamics = []
@@ -96,7 +96,10 @@ class InitialisingWeightsTrainer:
 
         for sample_index,initialisation_vector in enumerate(
             self._get_initialisation_vectors(
-                score_selector=score_selector, 
+                score_selector=max, 
+                max_vectors=number_of_samples,
+            ) + self._get_initialisation_vectors(
+                score_selector=min, 
                 max_vectors=number_of_samples,
             )
         ):
@@ -135,7 +138,12 @@ class InitialisingWeightsTrainer:
             network_names=network_labels,
             sample_names= sample_labels,
             iteration_names=iterations,
-            repetition_names = repetitions
+            repetition_names = repetitions,
+            initialisation_states = (
+                ["max"]*training_iterations*repetition_of_sample*number_of_samples
+            ) + (
+                ["min"]*training_iterations*repetition_of_sample*number_of_samples
+            )
         )
 
     @staticmethod
@@ -146,7 +154,8 @@ class InitialisingWeightsTrainer:
         network_scores:List[float],
         iteration_names:List[int],
         repetition_names:List[int],
-        sample_names:Labels
+        sample_names:Labels,
+        initialisation_states:Labels
     ) -> DataFrame:
         colour_scaler.autoscale(network_scores)
         data = DataFrame(data=coordinates, columns=[DataFrameNames.X_COORDINATE,DataFrameNames.Y_COORDINATE])
@@ -156,6 +165,7 @@ class InitialisingWeightsTrainer:
         data[DataFrameNames.NETWORK_ITERATION] = iteration_names
         data[DataFrameNames.SAMPLE] = sample_names
         data[DataFrameNames.REPETITION] = repetition_names
+        data[DataFrameNames.INITIALISATION_STATE] = initialisation_states
         data[DataFrameNames.COLOUR] = list(map(list, inferno(colour_scaler(network_scores))))
         print(data)
         return data        
