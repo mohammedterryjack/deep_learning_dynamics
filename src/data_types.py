@@ -17,3 +17,4 @@ class DataFrameNames:
     NETWORK_ITERATION = "iteration"
     COLOUR = "colour"
     SAMPLE = "sample"
+    REPETITION = "repetition"

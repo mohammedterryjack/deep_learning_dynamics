@@ -91,6 +91,7 @@ class InitialisingWeightsTrainer:
         network_labels = []
         sample_labels = []
         iterations = []
+        repetitions = []
         network_index = 0
 
         for sample_index,initialisation_vector in enumerate(
@@ -99,8 +100,7 @@ class InitialisingWeightsTrainer:
                 max_vectors=number_of_samples,
             )
         ):
-            for _ in range(repetition_of_sample):
-                sample_labels_ = [sample_index for _ in range(training_iterations)]
+            for repetition in range(repetition_of_sample):
                 learning_dynamics_, scores_, network_labels_, iterations_ = self._learn(
                     classes = self.classes,
                     training_inputs = self.x, 
@@ -116,7 +116,11 @@ class InitialisingWeightsTrainer:
                         initialisation_vector = initialisation_vector,
                     ),
                 )
+                sample_labels_ = [sample_index for _ in range(training_iterations)]
+                repetitions_ = [repetition for _ in range(training_iterations)]
                 network_labels_ = list(map(lambda label:f"network_{network_index}:{label}", network_labels_))
+
+                repetitions.extend(repetitions_)
                 learning_dynamics.extend(learning_dynamics_)
                 scores.extend(scores_)
                 network_labels.extend(network_labels_)
@@ -130,7 +134,8 @@ class InitialisingWeightsTrainer:
             network_scores=scores,
             network_names=network_labels,
             sample_names= sample_labels,
-            iteration_names=iterations
+            iteration_names=iterations,
+            repetition_names = repetitions
         )
 
     @staticmethod
@@ -140,6 +145,7 @@ class InitialisingWeightsTrainer:
         network_names:Labels, 
         network_scores:List[float],
         iteration_names:List[int],
+        repetition_names:List[int],
         sample_names:Labels
     ) -> DataFrame:
         colour_scaler.autoscale(network_scores)
@@ -149,6 +155,7 @@ class InitialisingWeightsTrainer:
         data[DataFrameNames.NETWORK_SCORE] = network_scores
         data[DataFrameNames.NETWORK_ITERATION] = iteration_names
         data[DataFrameNames.SAMPLE] = sample_names
+        data[DataFrameNames.REPETITION] = repetition_names
         data[DataFrameNames.COLOUR] = list(map(list, inferno(colour_scaler(network_scores))))
         print(data)
         return data        

@@ -15,7 +15,7 @@ class InitialisationVisualiser:
             data=data_to_plot,
             x=DataFrameNames.NETWORK_ITERATION,
             y=DataFrameNames.NETWORK_SCORE,
-            style=DataFrameNames.SAMPLE,
-            #TODO: hue=DataFrameNames.REPETITION, 
+            hue=DataFrameNames.SAMPLE,
+            style=DataFrameNames.REPETITION, 
         )
         show()
